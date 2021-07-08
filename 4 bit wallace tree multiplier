@@ -1,0 +1,81 @@
+//code
+module ha(
+    output s,
+    output c,
+    input x,
+    input y
+    );
+assign s=x^y;
+assign c=x&y;
+endmodule
+
+module fa(s,co,x,y,ci);
+input x,y,ci;
+output s,co;
+wire s1,c1,c2;
+ha half1(s1,c1,x,y);
+ha half2(s,c2,s1,ci);
+or(co,c1,c2);
+endmodule
+
+module wallace(
+    input [3:0] a,
+    input [3:0] b,
+    output [7:0] prod
+    );
+wire s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11;
+reg p[3:0][3:0];
+integer i,j;
+always@(a or b)
+begin
+for(i=0;i<=3;i=i+1)
+   for(j=0;j<=3;j=j+1)
+        p[j][i]=a[j]&b[i];
+   end 
+ha h1(s0,c0,p[0][1],p[1][0]);
+fa f1(s1,c1,p[0][2],p[1][1],p[2][0]);
+fa f2(s2,c2,p[0][3],p[1][2],p[2][1]);
+fa f3(s3,c3,p[1][3],p[2][2],1'b0);
+
+fa f4(s4,c4,s1,c0,1'b0);
+fa f5(s5,c5,s2,c1,p[3][0]);
+fa f6(s6,c6,s3,c2,p[3][1]);
+fa f7(s7,c7,p[2][3],c3,p[3][2]);
+
+fa f8(s8,c8,s5,c4,1'b0);
+fa f9(s9,c9,s6,c8,c5);
+fa f10(s10,c10,s7,c6,c9);
+fa f11(s11,c11,p[3][3],c7,c10);
+
+assign prod[0]=p[0][0];
+assign prod[1]=s0;
+assign prod[2]=s4;
+assign prod[3]=s8;
+assign prod[4]=s9;
+assign prod[5]=s10;
+assign prod[6]=s11;
+assign prod[7]=c11;
+endmodule
+
+//testbench
+module WallaceTest;
+reg [3:0] a;
+reg [3:0] b;
+wire [7:0] prod;
+
+wallace uut(
+     .a(a),
+     .b(b),
+     .prod(prod));
+initial begin
+a=1101;
+b=1100;
+#100;
+a=0001;
+b=0010;
+#100;
+a=0000;
+b=0000;
+end     
+endmodule
+
