@@ -1,0 +1,99 @@
+//code
+module boothmul( 
+    input [3:0] Ain,
+    input [3:0] M,
+    input [4:0] Qin,
+    output [3:0] Aout,
+    output [4:0] Qout
+    );
+reg [3:0] Atemp;
+reg [4:0] Qtemp;
+
+wire [3:0] Asum = Ain + M;
+wire [3:0] Asub = Ain + ~M +1;
+
+always@(Ain,M,Qin,Asum,Asub)begin
+           
+           case(Qin[1:0])
+              2'b00,2'b11: begin
+                            Atemp={Ain[3],Ain[3:1]};
+                            Qtemp={Ain[0],Qin[4:1]};
+                           end
+              2'b01:       begin              
+                            Atemp={Asum[3],Asum[3:1]};
+                            Qtemp={Asum[0],Qin[4:1]};
+                           end
+              2'b10:       begin              
+                            Atemp={Asub[3],Asub[3:1]};
+                            Qtemp={Asub[0],Qin[4:1]};
+                           end                            
+           endcase
+end
+assign Aout = Atemp;
+assign Qout = Qtemp;           
+endmodule
+
+module boothmain(
+    input [3:0] M,
+    input [4:0] Q,
+    output [7:0] Z
+    );
+wire [3:0] Aout1;
+wire [4:0] Qout1;
+wire [3:0] Aout2;
+wire [4:0] Qout2;
+wire [3:0] Aout3;
+wire [4:0] Qout3;
+wire [3:0] Aout4;
+wire [4:0] Qout4;    
+
+boothmul booth1(
+       .Ain(4'b0000),
+       .M(M),
+       .Qin({Q,1'b0}),
+       .Aout(Aout1),
+       .Qout(Qout1));
+boothmul booth2(
+       .Ain(Aout1),
+       .M(M),
+       .Qin(Qout1),
+       .Aout(Aout2),
+       .Qout(Qout2));
+boothmul booth3(
+       .Ain(Aout2),
+       .M(M),
+       .Qin(Qout2),
+       .Aout(Aout3),
+       .Qout(Qout3));       
+boothmul booth4(
+       .Ain(Aout3),
+       .M(M),
+       .Qin(Qout3),
+       .Aout(Aout4),
+       .Qout(Qout4));                       
+        
+assign Z={Aout4,Qout4[4:1]}; 
+endmodule
+
+//test bench
+module booth_test;
+     reg[3:0] M;
+     reg[3:0] Q;
+
+     wire[7:0] Z;
+     
+     boothmain uut(
+     .M(M),
+     .Q(Q),
+     .Z(Z)
+     );
+initial begin 
+      M = 0; Q = 0;  
+      #60 M = 4;Q = 3;
+      #60 M = 7;Q = 7;
+      #60 M = -5;Q = 6;
+      #60 M = 0;Q = 0;
+      #100;
+end
+endmodule
+
