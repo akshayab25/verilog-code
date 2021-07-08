@@ -1,0 +1,40 @@
+//code
+module bcdcounter(
+input clk, reset,upordown, output reg[3:0]count);
+// down counter
+always @(posedge clk or posedge reset)
+begin
+if(reset==1)
+count =0;
+else if(upordown==1)
+if(count==9)
+count=0;
+else
+ count = count+ 1;
+else
+if (count==0)
+count=9;
+else
+ count <= count - 1;
+end 
+endmodule
+
+//Test Bench
+module bcdcountertb;
+reg clk, reset,upordown;
+wire [3:0] count;
+
+bcdcounteruut(.clk(clk), .reset(reset),.upordown(upordown), .count(count));
+initial begin 
+clk=0;
+forever #5 clk=~clk;
+end
+initial begin
+reset=1;
+upordown=0;
+#20;
+reset=0;
+#200;
+upordown=1;
+end
+endmodule
