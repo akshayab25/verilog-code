@@ -61,3 +61,9 @@ always #5 b=~b;
 always #10 a=~a;
 endmodule
 
+//truth table
+X	Y	S	C
+0	0	0	0
+0	1	1	0
+1	0	1	0
+1	1	0	1
