@@ -1,0 +1,35 @@
+//fulladder
+module fulladder(x,y,ci,s,co);
+input x,y,ci;
+output s,co;
+wire s1,c1,c2;
+halfadder_dataflow  ha1(x,y,s1,c1);
+halfadder_dataflow ha2 (s1,ci,s,c2);
+or(co,c1,c2);
+endmodule
+
+//testbench
+module fulladdertest;
+reg a;
+reg b;
+reg carryi;
+wire sum;
+wire carryo;
+fulladder uut(
+.x(a),
+y(b),
+.ci(carryi),
+.s(sum),
+.co(carryo)
+);
+initial
+begin
+a=0;
+b=0;
+carryi=0;
+#100 $finish;
+end
+always #5 carryi=~carryi;
+always #10 b=~b;
+always #20 a=~a;
+endmodule
