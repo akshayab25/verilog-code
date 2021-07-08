@@ -1,0 +1,63 @@
+//gatelevel modeling
+module halfadder_gatelevel(
+    input x,
+    input y,
+    output s,
+    output c
+    );
+ xor(s,x,y);
+ and(c,x,y);
+endmodule
+
+//dataflow modelling
+module halfadder_dataflow(
+    input x,
+    input y,
+    output s,
+    output c
+    );
+assign s=x^y;
+assign c=x&y;
+endmodule
+
+//behavioural modelling
+module halfadder3_behavioural(
+input x,
+input y,
+output s,
+output c
+);
+reg s;
+reg c;
+always @(x,y)
+begin
+s =x^y;
+end
+always @(x,y)
+begin
+c =x&y;
+end
+endmodule
+
+//testbench
+module halfaddertest;
+reg a;
+reg b;
+wire sum;
+wire carry;
+halfadder_dataflow uut(
+.x(a),
+.y(b),
+.s(sum),
+.c(carry)
+);
+Initial
+begin
+a=0;
+b=0;
+#100 $finish;
+end
+always #5 b=~b;
+always #10 a=~a;
+endmodule
+
