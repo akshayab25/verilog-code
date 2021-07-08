@@ -1,0 +1,89 @@
+//code
+module dff (   input d,
+input clk,
+input rstn,
+output reg q,
+output qn);
+always @ (posedge clk or negedge rstn)
+if (!rstn)
+q = 0;
+else
+q = d;
+assign qn = ~q;
+endmodule
+
+module seqdetec( input clk,x,
+input rstn,
+output out);
+wire  q0;
+wire  qn0;
+wire  q1;
+wire  qn1;
+wire a;
+wire b;
+assign b=((q0&x)|(q1&x));
+dff   dff0 ( .d (b),
+.clk (clk),
+.rstn (rstn),
+.q (q1),
+.qn (qn1));
+assign a=(~q0&x)|(q1&x);
+dff   dff1 ( .d (a),
+.clk (clk),
+.rstn (rstn),
+.q (q0),
+.qn (qn0));
+and(out,q0,q1);
+endmodule
+
+//testbench
+module seqdetec_tb;
+reg clk,x;
+reg rstn;
+wire out;
+seqdetec uut(  .x(x),.clk (clk),
+.rstn (rstn),
+.out (out));
+always #5 clk = ~clk;
+initial
+begin
+clk=0;
+rstn=0;
+x=0;
+#10;
+rstn=1;
+x=0;
+#10;
+x=0;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=0;
+#10;
+x=0;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=1;
+#10;
+x=0;
+#10;
+x=0;
+#10;
+x=1;#10;
+end
+endmodule
