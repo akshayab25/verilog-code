@@ -1,0 +1,65 @@
+//code
+module dff(   input d,
+               input clk,
+               input rstn,
+               output reg q,
+               output qn);
+   always @ (posedgeclk or negedgerstn)
+      if (!rstn)
+         q = 0;
+      else  
+         q = d;
+ assign qn = ~q;
+endmodule
+
+
+module ripplecounter( inputclk,
+                input rstn,
+                output [3:0] out);
+wire  q0;
+wire  qn0;
+wire  q1;
+wire  qn1;
+wire  q2;
+wire  qn2;
+wire  q3;
+wire  qn3;
+dff   dff0 ( .d (qn0), 
+.clk (clk),
+.rstn (rstn),
+.q (q0),
+.qn (qn0));
+dff   dff1 ( .d (qn1), 
+.clk (qn0),
+.rstn (rstn),
+.q (q1),
+.qn (qn1));
+dff   dff2 ( .d (qn2), 
+always #5 clk = ~clk;
+ initial begin
+rstn = 0;
+clk = 0;
+ repeat (4) @ (posedgeclk);
+rstn = 1;
+ repeat (25) @ (posedgeclk);
+      $finish;
+   end
+endmodule
+
+//testbench
+module ripplecountertb;
+reg clk;
+   reg rstn;
+   wire [3:0] out;
+ripplecounter  r0(  .clk (clk),.rstn (rstn), .out (out));
+endmodule
+ always #5 clk = ~clk;  
+ initial begin  
+ rstn <= 0;  
+ clk <= 0;  
+ repeat (4) @ (posedge clk);  
+  rstn <= 1;  
+repeat (25) @ (posedge clk);
+$finish;
+end  
+endmodule
