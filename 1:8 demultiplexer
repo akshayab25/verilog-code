@@ -1,0 +1,51 @@
+//code
+module dm81(in,s0,s1,s2,d0,d1,d2,d3,d4,d5,d6,d7);
+input in,s0,s1,s2;
+output d0,d1,d2,d3,d4,d5,d6,d7;
+assign d0=(in & ~s2 & ~s1 &~s0),
+d1=(in & ~s2 & ~s1 &s0),
+d2=(in & ~s2 & s1 &~s0),
+d3=(in & ~s2 & s1 &s0),
+d4=(in & s2 & ~s1 &~s0),
+d5=(in & s2 & ~s1 &s0),
+d6=(in & s2 & s1 &~s0),
+d7=(in & s2 & s1 &s0);
+endmodule
+
+//testbench
+module test;
+reg in;
+reg s0;
+reg s1;
+reg s2;
+wire d0;
+wire d1;
+wire d2;
+wire d3;
+wire d4;
+wire d5;
+wire d6;
+wire d7;
+dm81 uut (.in(in), .s0(s0), .s1(s1), .s2(s2), .d0(d0), .d1(d1), .d2(d2), .d3(d3), .d4(d4), .d5(d5), .d6(d6), .d7(d7));
+initial
+begin
+in=0;s0=0;s1=0;s2=0;
+#200 $finish;
+end
+always #1 s0=~s0;
+always #2 s1=~s1;
+always #4 s2=~s2;
+always #8 in=~in;
+endmodule
+
+//truth table
+SELECT LINES		OUTPUTS
+S2	S1	S0		D7	D6	D5	D4	D3	D2	D1	D0
+0	0	0		0	0	0	0	0	0	0	in
+0	0	1		0	0	0	0	0	0	in	0
+0	1	0		0	0	0	0	0	in	0	0
+0	1	1		0	0	0	0	in	0	0	0
+1	0	0		0	0	0	in	0	0	0	0
+1	0	1		0	0	in	0	0	0	0	0
+1	1	0		0	in	0	0	0	0	0	0
+1	1	1		in	0	0	0	0	0	0	0
