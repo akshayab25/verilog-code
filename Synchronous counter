@@ -1,0 +1,30 @@
+//code
+module syncounter(input clk,rst,output[3:0] cnt);
+ reg [3:0] cnt_up;
+always@(posedgeclk or posedgerst)
+begin 
+ if(rst)
+cnt_up<=4'b0000;
+else
+cnt_up<= cnt_up+4'b0001;
+ end
+ assign cnt=cnt_up;
+endmodule
+
+//testbench
+module syncountertb;
+reg clk,rst;
+wire [3:0]cnt;
+syncounteruut(.clk(clk),.rst(rst),.cnt(cnt));
+initial
+begin 
+clk=0;
+forever #5 clk=~clk;
+end
+initial
+begin
+rst=1;
+#20;
+rst=0;
+end
+endmodule
