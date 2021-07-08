@@ -1,0 +1,60 @@
+//gatelevel modelling
+module halfsubtractor_gatelevel(
+input x,
+    input y,
+    output d,
+    output b
+    );
+ xor(d,x,y);
+ and(b,~x,y);
+ endmodule
+
+//dataflow modelling
+module halfsubtractor_dataflow(
+    input x,
+    input y,
+    output d,
+    output b
+    );
+assign d=x^y;
+assign b=(~x&y);
+endmodule
+
+//behavioural modelling
+module halfsubtractor3(
+    input x,
+    input y,
+    output d,
+    output b
+    );
+reg d;
+reg b;
+always @(x,y)
+begin
+d=x^y;
+b=(~x&y);
+end
+endmodule
+
+//test bench
+module sub1test;
+reg a;
+reg b;
+wire diff;
+wire borrow;
+halfsubtractor_dataflow uut(
+.x(a),
+.y(b),
+.d(diff),
+.b(borrow)
+);
+initial
+begin
+a=0;
+b=0;
+#100 $finish;
+end
+always #5 b=~b;
+always #10 a=~a;
+endmodule
+
