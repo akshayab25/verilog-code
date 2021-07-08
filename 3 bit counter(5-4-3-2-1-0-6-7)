@@ -1,0 +1,41 @@
+//code
+module counter(input [2:0]Q,inputclk, output reg [2:0]D);
+wire a,b,c;
+assign a=((~Q[2])&(~Q[1]))+(Q[2]&Q[1]);
+assign b=Q[1];
+assign c=((~Q[2])&(~Q[0]))+(Q[2]&(~Q[1])&(~Q[0]))+(Q[2]&Q[1]&Q[0]);
+always @(posedge clk)
+begin
+D[2]=a;
+D[1]=b;
+D[0]=c;
+end.clk (qn1),
+.rstn (rstn),
+.q (q2),
+.qn (qn2));
+ dff   dff3 ( .d (qn3), 
+.clk (qn2),
+.rstn (rstn),
+.q (q3),
+.qn (qn3));
+ assign out = {q3, q2, q1, q0};
+endmodule
+
+//testbench
+module countertb;
+reg [2:0]Q;
+reg clk;
+wire [2:0]D;
+counter uut(.Q(Q),.clk(clk),.D(D));
+initial
+ begin
+ Q=3'b000;
+clk=0;
+ #900$stop;
+ end
+ always #400 Q[2]=~Q[2];
+always #200 Q[1]=~Q[1];
+ always #100 Q[0]=~Q[0];
+ always #50 clk=~clk;
+endmodule
+
