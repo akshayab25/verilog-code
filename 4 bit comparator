@@ -1,0 +1,47 @@
+//code
+module bit_comparator(A,B,A_gr_B,A_eq_B,A_less_B);
+input [3:0]A;
+input [3:0]B;
+output A_gr_B,A_eq_B,A_less_B;
+assign A0bar=~A[0],A1bar=~A[1],A2bar=~A[2],A3bar=~A[3],B0bar=~B[0],B1bar=~B[1],B2bar=~B[2],B3bar=~B[3];
+assign X0=(A[0]&B[0])|(A0bar&B0bar);
+assign X1=(A[1]&B[1])|(A1bar&B1bar);
+assign X2=(A[2]&B[2])|(A2bar&B2bar);
+assign X3=(A[3]&B[3])|(A3bar&B3bar);
+assign A_gr_B=(A[3]&B3bar)|(X3&A[2]&B2bar)|(X3&X2&A[1]&B1bar)|(X3&X2&X1&A[0]&B0bar);
+assign A_eq_B=X3&X2&X1&X0;
+assign A_less_B=(A3bar&B[3])|(X3&A2bar&B[2])|(X3&X2&A1bar&B[1])|(X3&X2&X1&A0bar&B[0]);
+endmodule
+
+//testbench
+module bit_comp_test;
+reg [3:0]A;
+reg [3:0]B;
+wire A_gr_B,A_eq_B,A_less_B;
+bit_comparator uut(.A(A),.B(B),.A_gr_B(A_gr_B),.A_eq_B(A_eq_B),.A_less_B(A_less_B));
+initial 
+begin 
+A[3]=0;A[2]=0;A[1]=0;A[0]=0;B[3]=0;B[2]=0;B[1]=0;B[0]=0;
+#700 $finish;
+end
+always #1 B[0]=~B[0];
+always #2 B[1]=~B[1];
+always #4 B[2]=~B[2];
+always #8 B[3]=~B[3];
+always #16 A[0]=~A[0];
+always #32 A[1]=~A[1];
+always #64 A[2]=~A[2];
+always #128 A[3]=~A[3];
+endmodule
+
+//truthtable
+A3B3	A2B2	A1B1	A0B0	A<B	A=B	A>B
+A3>B3	X	X	X	0	0	1
+A3<B3	X	X	X	1	0	0
+A3=B3	A2>B2	X	X	0	0	1
+A3=B3	A2<B2	X	X	1	0	0
+A3=B3	A2=B2	A1>B1	X	0	0	1
+A3=B3	A2=B2	A1<B1	X	1	0	0
+A3=B3	A2=B2	A1=B1	A0>B0	0	0	1
+A3=B3	A2=B2	A1=B1	A0<B0	1	0	0
+A3=B3	A2=B2	A1=B1	A0=B0	0	1	0
