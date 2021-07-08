@@ -33,3 +33,15 @@ always #5 carryi=~carryi;
 always #10 b=~b;
 always #20 a=~a;
 endmodule
+
+//truth table
+X	Y	Cin	S	  Co
+0	0	0	  0	  0
+0	1	0	  1 	0
+0	0	1	  1 	0
+0	1	1	  0 	1
+1	0	0	  1 	0
+1	1	0	  0	  1
+1	0	1	  0 	1
+1	1	1	  1 	1
+
