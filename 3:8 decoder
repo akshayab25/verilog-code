@@ -1,0 +1,40 @@
+//code
+module decoder(s0,s1,s2,y0,y1,y2,y3,y4,y5,y6,y7);
+input s0,s1,s2;
+output y0,y1,y2,y3,y4,y5,y6,y7;
+assign y0=(~s0 & ~s1 & ~s2);
+assign y1=(s0 & ~s1 & ~s2);
+assign y2=(~s0 & s1 & ~s2);
+assign y3=(s0 & s1 & ~s2);
+assign y4=(~s0 & ~s1 & s2);
+assign y5=(s0 & ~s1 & s2);
+assign y6=(~s0 & s1 & s2);
+assign y7=(s0 & s1 & s2);
+endmodule
+
+//testbench
+module test;
+reg s0,s1,s2;
+wire y0,y1,y2,y3,y4,y5,y6,y7;
+decoder uut(.s0(s0),.s1(s1),.s2(s2),.y0(y0),.y1(y1),.y2(y2),.y3(y3),.y4(y4),.y5(y5),.y6(y6),.y7(y7));
+initial 
+begin
+s0=0;s1=0;s2=0;
+#100 $finish;
+end
+always #5 s0=~s0;
+always #10 s1=~s1;
+always #20 s2=~s2;
+endmodule
+
+//truth table
+INPUTS	OUTPUTS
+S2	S1	S0	y7	y6	y5	y4	y3	y2	y1	y0
+0	0	0	1	0	0	0	0	0	0	0
+0	0	1	0	1	0	0	0	0	0	0
+0	1	0	0	0	1	0	0	0	0	0
+0	1	1	0	0	0	1	0	0	0	0
+1	0	0	0	0	0	0	1	0	0	0
+1	0	1	0	0	0	0	0	1	0	0
+1	1	0	0	0	0	0	0	0	1	0
+1	1	1	0	0	0	0	0	0	0	1
