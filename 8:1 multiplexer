@@ -1,0 +1,55 @@
+//code
+module m81(out, D0, D1, D2, D3, D4, D5, D6, D7, S0, S1, S2);
+input wire D0, D1, D2, D3, D4, D5, D6, D7, S0, S1, S2;
+output reg out;
+always@(*)
+begin
+case(S0 & S1 & S2)
+3'b000: out=D0;
+3'b001: out=D1;
+3'b010: out=D2;
+3'b011: out=D3;
+3'b100: out=D4;
+3'b101: out=D5;
+3'b110: out=D6;
+3'b111: out=D7;
+default: out=1'b0;
+endcase
+end
+endmodule
+
+//testbench
+module test; 
+wire out;
+reg D0, D1, D2, D3, D4, D5, D6, D7, S0,S1,S2;
+m81 name(.D0(D0), .D1(D1), .D2(D2), .D3(D3), .D4(D4), .D5(D5), .D6(D6), .D7(D7), .S0(S0), .S1(S1), .out(out)); 
+initial 
+begin
+D0=0; D1=0; D2=0; D3=0; D4=0; D5=0; D6=0; D7=0;S0=0; S1=0; S2=0; 
+#100 $finish; 
+end 
+always #1 D0=~D0;
+always #2 D1=~D1;
+always #3 D2=~D2;
+always #4 D3=~D3;
+always #5 D4=~D4;
+always #6 D5=~D5;
+always #7 D6=~D6;
+always #8 D7=~D7;
+always #9 S0=~S0;
+always #10 S1=~S1;
+always #11 S2=~S2;
+endmodule;
+
+//truth table
+SELECTION LINES	OUTPUT
+out
+S2	S1	S0	
+0	0	0	D0
+0	0	1	D1
+0	1	0	D2
+0	1	1	D3
+1	0	0	D4
+1	0	1	D5
+1	1	0	D6
+1	1	1	D7
