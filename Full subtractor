@@ -1,0 +1,42 @@
+//full subtractor
+module fullsubtractor(a,b,bi,b0,d);
+input a,b,bi;
+output b0,d;
+wire d1,b01,b02;
+halfsubtractor_dataflow  hs1(a,b,b01,d1);
+halfsubtractor_dataflow  hs2(d1,bi,b02,d);
+or(b0,b01,b02);
+endmodule
+
+//test bench
+module fullsubtest;
+reg a;
+reg b;
+reg borrowi;
+wire diff;
+wire borrowo;
+fullsubtractor uut(
+.a(a),
+.b(b),
+.bi(borrowi),
+.b0(borrowo),
+.d(diff)
+);
+initial
+begin
+a=0;
+b=0;
+borrowi=0;
+#100 $finish;
+end
+always #5 borrowi=~borrowi;
+always #10 b=~b;
+always #20 a=~a;
+endmodule
+
+//truth table
+X	Y	S	C
+0	0	0	0
+0	1	1	0
+1	0	1	0
+1	1	0	1
